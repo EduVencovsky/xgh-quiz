@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import xghLogo from "./assets/xgh.png";
+import "./App.css";
+import { useCallback, useState } from "react";
+import { Form } from "./form/Form";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [state, setState] = useState<"start" | "quiz" | "results">("start");
+  const [result, setResult] = useState<number>();
+
+  const onEnd = useCallback((percentageResult: number) => {
+    setResult(percentageResult);
+    setState("results");
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1 style={{ fontFamily: "Dearkatienbp" }}>eXtreme Go Horse Quiz</h1>
+      {state === "start" ? (
+        <>
+          <div>
+            <img src={xghLogo} className="logo react" alt="React logo" />
+          </div>
+          <div className="card">
+            <p>
+              Discover how much of teh XGH process your project is following
+            </p>
+            <button onClick={() => setState("quiz")}>Start</button>
+          </div>
+        </>
+      ) : null}
+      {state === "quiz" ? <Form onEnd={onEnd} /> : null}
+      {state === "results" && result !== undefined ? (
+        <div>
+          <div>Congrats! you are {result * 100}% XGH</div>
+          <button onClick={() => setState("start")}>Reset</button>
+        </div>
+      ) : null}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
